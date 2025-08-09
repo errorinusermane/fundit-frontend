@@ -37,25 +37,23 @@ export default function AppNavigator() {
   const { user } = useUserStore();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
-          <Stack.Screen name="Login" component={LoginPage} />
-        ) : (
-          <>
-            <Stack.Screen name="ProposalList" component={ProposalListPage} />
-            <Stack.Screen name="ProposalDetail" component={ProposalDetailPage} />
-            <Stack.Screen name="BidDetail" component={BidDetailPage} />
-            <Stack.Screen name="CreateProposal" component={CreateProposalPage} />
-            <Stack.Screen name="SubmitBid" component={SubmitBidPage} />
-            <Stack.Screen name="MyProposals" component={MyProposalsPage} />
-            <Stack.Screen name="MyBids" component={MyBidsPage} />
-            <Stack.Screen name="MyContracts" component={MyContractsPage} />
-            <Stack.Screen name="Rewards" component={RewardsPage} />
-            <Stack.Screen name="MyPage" component={MyPage} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!user ? (
+        <Stack.Screen name="Login" component={LoginPage} />
+      ) : (
+        <>
+          <Stack.Screen name="ProposalList" component={ProposalListPage} />
+          <Stack.Screen name="ProposalDetail" component={ProposalDetailPage} />
+          <Stack.Screen name="BidDetail" component={BidDetailPage} />
+          <Stack.Screen name="CreateProposal" component={CreateProposalPage} />
+          <Stack.Screen name="SubmitBid" component={SubmitBidPage} />
+          <Stack.Screen name="MyProposals" component={MyProposalsPage} />
+          <Stack.Screen name="MyBids" component={MyBidsPage} />
+          <Stack.Screen name="MyContracts" component={MyContractsPage} />
+          <Stack.Screen name="Rewards" component={RewardsPage} />
+          <Stack.Screen name="MyPage" component={MyPage} />
+        </>
+      )}
+    </Stack.Navigator>
   );
 }

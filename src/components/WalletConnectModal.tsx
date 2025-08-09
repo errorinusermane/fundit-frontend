@@ -19,7 +19,7 @@ interface WalletConnectModalProps {
   email: string; // verifyMagicToken 이후 받은 이메일
   role: "user" | "company";
   onClose: () => void;
-  onSuccess?: () => void; // 연결 성공 후 처리 (선택)
+  onSuccess?: (walletAddress: string) => void;
 }
 
 const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
@@ -40,7 +40,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
       const res = await connectWallet({ email, wallet });
       globalThis.authToken = res.token;
       setSuccess(true);
-      onSuccess?.(); // 성공 시 콜백
+      onSuccess?.(wallet); // 성공 시 콜백
     } catch (err: any) {
       setErrorMsg("지갑 연결에 실패했습니다. 올바른 주소인지 확인하세요.");
     } finally {

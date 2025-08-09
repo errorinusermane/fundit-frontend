@@ -1,3 +1,4 @@
+// src/contexts/WalletContext.tsx
 import React, { createContext, useContext, useState } from "react";
 
 interface WalletContextType {
