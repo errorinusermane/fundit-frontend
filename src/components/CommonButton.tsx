@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   ViewStyle,
+  TextStyle,
 } from "react-native";
 import { colors, spacing, typography, radius } from "../styles";
 
@@ -18,6 +19,7 @@ interface CommonButtonProps {
   loading?: boolean;
   fullWidth?: boolean;
   style?: ViewStyle;
+  textStyle?: TextStyle;
   role?: ButtonRole;
 }
 
@@ -28,6 +30,7 @@ const CommonButton: React.FC<CommonButtonProps> = ({
   loading = false,
   fullWidth = true,
   style,
+  textStyle,
   role = "default",
 }) => {
   // 이전 로직 유지: 역할별 색상 분기 함수는 남겨두되,
@@ -48,12 +51,13 @@ const CommonButton: React.FC<CommonButtonProps> = ({
         { backgroundColor: getBackgroundColor(), borderColor: colors.border },
         fullWidth && { alignSelf: "stretch" },
         style,
+        textStyle,
       ]}
     >
       {loading ? (
         <ActivityIndicator color={colors.intents.primaryFg} />
       ) : (
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, textStyle]}>{title}</Text>
       )}
     </TouchableOpacity>
   );

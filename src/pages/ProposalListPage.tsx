@@ -12,7 +12,7 @@ import CommonButton from "../components/CommonButton";
 import { getAllProposals } from "../api/proposal";
 import { Proposal, ProposalStatus } from "../types/proposal";
 import { useUserStore } from "../store/userStore";
-import { colors, spacing, typography } from "../styles";
+import { colors, radius, spacing, typography } from "../styles";
 
 const FILTERS: (ProposalStatus | "ALL")[] = ["ALL", "ACTIVE", "CLOSED", "CANCELLED"];
 
@@ -102,6 +102,7 @@ export function ProposalListPage() {
             onPress={() => navigation.navigate("CreateProposal")}
             // 버튼 자체 퍼블리싱은 CommonButton 내부 토큰 사용
             style={styles.fab}
+            textStyle={{ fontSize: 42, fontWeight: typography.weight.medium }}
           />
         </View>
       )}
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing,                   // 10
     paddingHorizontal: spacing * 2, // 20
-    paddingVertical: spacing,       // 10
+    paddingVertical: spacing * 1.6,       // 10
   },
   filterButton: {
     height: CHIP_H,
@@ -156,9 +157,9 @@ const styles = StyleSheet.create({
     bottom: spacing * 2, // 20
   },
   fab: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 70,
+    height: 70,
+    borderRadius: radius,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 0,
