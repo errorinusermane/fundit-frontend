@@ -9,12 +9,13 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet as RNStyleSheet,
 } from "react-native";
 import CommonButton from "./CommonButton";
 import AlertMessage from "./AlertMessage";
 import { requestMagicLink } from "../api/auth";
 import { UserRole } from "../types/user";
-import { colors, spacing, typography, radius, shadows } from "../styles";
+import { colors, spacing, typography, radius } from "../styles";
 
 interface LoginModalProps {
   role: UserRole;
@@ -33,27 +34,31 @@ const LoginModal: React.FC<LoginModalProps> = ({ role, onClose }) => {
       setErrorMsg("");
       await requestMagicLink({ email, role });
       setSent(true);
-    } catch (err: any) {
-      setErrorMsg("메일 전송에 실패했습니다. 다시 시도해주세요.");
+    } catch {
+      setErrorMsg("Failed to send email. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  const title = role === "user" ? "Log in as individual" : "Log in as Insurer";
 
   return (
     <Modal transparent animationType="fade">
       <Pressable style={styles.overlay} onPress={onClose}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.centeredView}
+          style={styles.center}
         >
+          {/* 안쪽 클릭은 닫히지 않게 */}
           <Pressable style={styles.card} onPress={() => {}}>
-            <Text style={styles.title}>
-              {role === "user" ? "개인 로그인" : "보험사 로그인"}
-            </Text>
-            <Text style={styles.label}>이메일 입력</Text>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.caption}>We’ll email you a sign‑in link.</Text>
+
+            <Text style={styles.label}>Email</Text>
             <TextInput
               placeholder="example@domain.com"
+              placeholderTextColor={colors.textMuted}
               style={styles.input}
               value={email}
               onChangeText={setEmail}
@@ -62,23 +67,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ role, onClose }) => {
               autoFocus
             />
 
-            <CommonButton
-              title="Magic Link 전송"
-              onPress={handleSendLink}
-              role={role}
-              loading={loading}
-              disabled={!email.includes("@")}
-            />
+            <View style={{ marginTop: spacing * 1.2 }}>
+              <CommonButton
+                title="Send Magic Link"
+                onPress={handleSendLink}
+                role={role}
+                loading={loading}
+                disabled={!email.includes("@")}
+                fullWidth
+              />
+            </View>
 
             {sent && (
               <AlertMessage
                 type="success"
-                message="이메일이 전송되었습니다. 받은 편지함을 확인해주세요."
+                message="Email sent. Please check your inbox."
               />
             )}
-            {errorMsg !== "" && (
-              <AlertMessage type="error" message={errorMsg} />
-            )}
+            {errorMsg !== "" && <AlertMessage type="error" message={errorMsg} />}
           </Pressable>
         </KeyboardAvoidingView>
       </Pressable>
@@ -90,43 +96,50 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
-    alignItems: "center",
   },
-  centeredView: {
-    width: "100%",
-    paddingHorizontal: spacing.lg,
-    justifyContent: "center",
-    alignItems: "center",
+  center: {
     flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: spacing * 2, // 20
   },
   card: {
-    width: "100%",
     backgroundColor: colors.surface,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    ...shadows.soft,
+    borderRadius: radius, // 16
+    paddingVertical: spacing * 2,   // 20
+    paddingHorizontal: spacing * 2, // 20
+    borderWidth: RNStyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   title: {
-    fontSize: typography.title,
-    fontWeight: typography.fontWeight.bold,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.title,       // 20
+    fontWeight: typography.weight.bold,    // 700
     color: colors.text,
-    marginBottom: spacing.md,
     textAlign: "center",
+    marginBottom: spacing,                 // 10
+  },
+  caption: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.card,        // 17
+    color: colors.textMuted,
+    textAlign: "center",
+    marginBottom: spacing * 1.6,           // 16
   },
   label: {
-    fontSize: typography.body,
-    color: colors.muted,
-    marginBottom: spacing.xs,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.card,
+    color: colors.textMuted,
+    marginBottom: spacing * 0.6,           // 6
   },
   input: {
-    borderWidth: 1,
+    borderWidth: RNStyleSheet.hairlineWidth,
     borderColor: colors.border,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    marginBottom: spacing.md,
-    fontSize: typography.body,
+    borderRadius: radius,
+    paddingHorizontal: spacing * 1.6,      // 16
+    paddingVertical: spacing * 1.2,        // 12
+    marginBottom: spacing * 1.6,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.body,        // 18
     backgroundColor: colors.background,
     color: colors.text,
   },

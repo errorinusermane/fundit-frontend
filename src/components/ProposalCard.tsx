@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { colors, spacing, typography, radius, shadows } from "../styles";
+import { colors, spacing, typography, radius } from "../styles";
 import { ProposalStatus, Proposal } from "../types/proposal";
 
 type Props = {
@@ -8,10 +8,10 @@ type Props = {
   onPress: () => void;
 };
 
-const statusColor = {
-  ACTIVE: colors.primary,
-  CLOSED: colors.muted,
-  CANCELLED: colors.danger,
+const statusStyle = {
+  ACTIVE: { bg: colors.tags.active.bg, fg: colors.tags.active.fg },
+  CLOSED: { bg: colors.tags.closed.bg, fg: colors.tags.closed.fg },
+  CANCELLED: { bg: colors.tags.cancelled.bg, fg: colors.tags.cancelled.fg },
 };
 
 const ProposalCard: React.FC<Props> = ({ proposal, onPress }) => {
@@ -24,34 +24,33 @@ const ProposalCard: React.FC<Props> = ({ proposal, onPress }) => {
     remainingTime,
   } = proposal;
 
-  const formattedPremium = `${minPremium} ~ ${maxPremium} FDT`;
-  const remainingText = remainingTime <= 0 ? "시작됨" : `${remainingTime}일 남음`;
+  const formattedPremium = `Min / Max 보험료: ${minPremium} - ${maxPremium} ETH`;
+  const remainingText =
+    remainingTime <= 0 ? "시작됨" : `${remainingTime} days left`;
 
   return (
-    <TouchableOpacity style={[styles.card, shadows.soft]} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.header}>
         <Text style={styles.title} numberOfLines={1}>
           {title}
         </Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor[status] }]}>
-          <Text style={styles.statusText}>{status}</Text>
+        <View
+          style={[
+            styles.statusBadge,
+            { backgroundColor: statusStyle[status].bg },
+          ]}
+        >
+          <Text
+            style={[styles.statusText, { color: statusStyle[status].fg }]}
+          >
+            {status}
+          </Text>
         </View>
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.label}>보험료</Text>
-        <Text style={styles.value}>{formattedPremium}</Text>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>입찰</Text>
-        <Text style={styles.value}>{bidCount}건</Text>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>시작까지</Text>
-        <Text style={styles.value}>{remainingText}</Text>
-      </View>
+      <Text style={styles.meta}>{formattedPremium}</Text>
+      <Text style={styles.meta}>Bid {bidCount}</Text>
+      <Text style={styles.time}>{remainingText}</Text>
     </TouchableOpacity>
   );
 };
@@ -59,45 +58,42 @@ const ProposalCard: React.FC<Props> = ({ proposal, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    marginVertical: spacing.sm,
+    borderRadius: radius,
+    padding: spacing,
+    marginBottom: spacing,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.sm,
+    marginBottom: spacing / 2,
   },
   title: {
-    fontSize: typography.subtitle,
-    fontWeight: typography.fontWeight.bold,
+    fontSize: typography.size.title,
+    fontFamily: typography.family.base,
+    fontWeight: typography.weight.bold,
     color: colors.text,
     flexShrink: 1,
   },
   statusBadge: {
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
+    borderRadius: radius,
+    paddingHorizontal: spacing / 1.5,
+    paddingVertical: spacing / 3,
   },
   statusText: {
-    fontSize: typography.small,
-    color: "#fff",
-    fontWeight: typography.fontWeight.medium,
+    fontSize: typography.size.detail,
+    fontFamily: typography.family.base,
+    fontWeight: typography.weight.medium,
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: spacing.xs,
+  meta: {
+    fontSize: typography.size.card,
+    color: colors.textMuted,
+    marginTop: spacing / 3,
   },
-  label: {
-    color: colors.muted,
-    fontSize: typography.small,
-  },
-  value: {
-    color: colors.text,
-    fontSize: typography.body,
-    fontWeight: typography.fontWeight.medium,
+  time: {
+    fontSize: typography.size.card,
+    color: colors.textMuted,
+    marginTop: spacing / 2,
   },
 });
 

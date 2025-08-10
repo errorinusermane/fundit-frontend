@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   ViewStyle,
+  StyleSheet as RNStyleSheet,
 } from "react-native";
 import { colors, spacing, typography, radius } from "../styles";
 
@@ -15,7 +16,7 @@ interface AlertMessageProps {
   message: string;
   type?: AlertType;
   onClose?: () => void;
-  duration?: number; // ms 단위
+  duration?: number; // ms
 }
 
 const AlertMessage: React.FC<AlertMessageProps> = ({
@@ -24,71 +25,92 @@ const AlertMessage: React.FC<AlertMessageProps> = ({
   onClose,
   duration = 3000,
 }) => {
-  const opacity = new Animated.Value(0);
+  const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(opacity, {
       toValue: 1,
-      duration: 200,
+      duration: 180,
       useNativeDriver: true,
     }).start();
 
     if (duration && onClose) {
-      const timer = setTimeout(onClose, duration);
-      return () => clearTimeout(timer);
+      const t = setTimeout(onClose, duration);
+      return () => clearTimeout(t);
     }
-  }, []);
+  }, [duration, onClose, opacity]);
+
+  const palette = paletteByType[type];
 
   return (
-    <Animated.View style={[styles.container, stylesByType[type], { opacity }]}>
-      <Text style={styles.message}>{message}</Text>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          backgroundColor: palette.bg,
+          borderColor: colors.border,
+          borderWidth: RNStyleSheet.hairlineWidth,
+          opacity,
+        } as any,
+      ]}
+    >
+      <Text style={[styles.message, { color: palette.fg }]}>{message}</Text>
       {onClose && (
-        <TouchableOpacity onPress={onClose}>
-          <Text style={styles.close}>×</Text>
+        <TouchableOpacity onPress={onClose} accessibilityRole="button">
+          <Text style={[styles.close, { color: palette.fg }]}>×</Text>
         </TouchableOpacity>
       )}
     </Animated.View>
   );
 };
 
-const baseStyle: ViewStyle = {
-  padding: spacing.md,
-  marginHorizontal: spacing.md,
-  borderRadius: radius.md,
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 4,
-  marginTop: spacing.lg,
-};
-
 const styles = StyleSheet.create({
   container: {
-    ...baseStyle,
+    paddingVertical: spacing * 1.2,   // 12
+    paddingHorizontal: spacing * 1.6, // 16
+    marginHorizontal: spacing * 1.6,  // 16
+    borderRadius: radius,             // 16
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: spacing * 2,           // 20
   },
   message: {
-    color: colors.surface,
-    fontSize: typography.body,
-    fontWeight: typography.fontWeight.medium,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.card,        // 17
+    fontWeight: typography.weight.medium,  // 600
     flex: 1,
-    paddingRight: spacing.sm,
+    paddingRight: spacing,                 // 10
   },
   close: {
-    color: colors.surface,
-    fontSize: typography.subtitle,
-    fontWeight: "bold",
+    fontFamily: typography.family.base,
+    fontSize: typography.size.title,       // 20
+    fontWeight: typography.weight.bold,    // 700
+    lineHeight: typography.size.title + 2,
   },
 });
 
-const stylesByType: Record<AlertType, ViewStyle> = {
-  success: { backgroundColor: colors.success },
-  error: { backgroundColor: colors.danger },
-  info: { backgroundColor: colors.primary },
-  warning: { backgroundColor: "#f59e0b" },
+// 서식 팔레트만 사용
+const paletteByType: Record<
+  AlertType,
+  { bg: string; fg: string }
+> = {
+  success: {
+    bg: colors.tags.active.bg,      // #132E2C
+    fg: colors.tags.active.fg,      // #25D980
+  },
+  error: {
+    bg: colors.tags.cancelled.bg,   // #30202E
+    fg: colors.tags.cancelled.fg,   // #F39C96
+  },
+  info: {
+    bg: colors.surface,             // #10151F
+    fg: colors.primary,             // #14EAFF
+  },
+  warning: {
+    bg: colors.tags.closed.bg,      // #2C2E44
+    fg: colors.tags.closed.fg,      // #C4CCD7
+  },
 };
 
 export default AlertMessage;

@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, Text, StyleSheet, Alert } from "react-native";
 import { useUserStore } from "../store/userStore";
-import { getContractsByUser, getContractsByCompany, toggleAutoPayment } from "../api/contract";
+import {
+  getContractsByUser,
+  getContractsByCompany,
+  toggleAutoPayment,
+} from "../api/contract";
 import { FunditContract } from "../types/contract";
 import ContractCard from "../components/ContractCard";
 import AlertMessage from "../components/AlertMessage";
@@ -32,20 +36,26 @@ export function MyContractsPage() {
   const handleToggleAuto = async (contractId: number) => {
     try {
       await toggleAutoPayment(contractId);
-      Alert.alert("✅ 설정 변경 완료", "자동 결제 설정이 변경되었습니다.");
+      Alert.alert("✅ Updated", "Auto‑payment setting has been changed.");
       fetchContracts();
     } catch (err) {
       console.error("❌ 자동 결제 변경 실패:", err);
-      Alert.alert("⚠️ 변경 실패", "잠시 후 다시 시도해주세요.");
+      Alert.alert("⚠️ Failed", "Please try again later.");
     }
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.inner}>
-      <Text style={styles.title}>My Contracts</Text>
+      {/* 페이지 타이틀 */}
+      <Text style={styles.pageTitle}>My Contracts</Text>
+
+      {/* 섹션 제목 */}
+      <View style={{ marginBottom: spacing * 1.2 }}>
+        <Text style={styles.sectionTitle}>Contracts</Text>
+      </View>
 
       {contracts.length === 0 ? (
-        <Text style={styles.empty}>계약이 없습니다.</Text>
+        <Text style={styles.empty}>No contracts yet.</Text>
       ) : (
         contracts.map((contract) => (
           <ContractCard
@@ -58,7 +68,7 @@ export function MyContractsPage() {
 
       {user?.role === "company" && (
         <AlertMessage
-          message="⚠️ 기업은 자동 결제 설정을 변경할 수 없습니다."
+          message="⚠️ Companies cannot change Auto‑Payment."
           type="warning"
         />
       )}
@@ -72,19 +82,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   inner: {
-    padding: spacing.md,
-    paddingBottom: spacing.xl * 2,
+    paddingHorizontal: spacing * 2, // 20
+    paddingTop: spacing * 4,        // 40
+    paddingBottom: spacing * 6,     // 60
   },
-  title: {
-    fontSize: typography.title,
-    fontWeight: typography.fontWeight.bold,
+  pageTitle: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.nav,       // 25
+    fontWeight: typography.weight.bold,  // 700
     color: colors.text,
-    marginBottom: spacing.md,
+    textAlign: "center",
+    marginBottom: spacing * 3,           // 30
+  },
+  sectionTitle: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.title,     // 20
+    fontWeight: typography.weight.bold,
+    color: colors.text,
   },
   empty: {
-    fontSize: typography.body,
-    color: colors.muted,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.body,      // 18
+    color: colors.textMuted,
     textAlign: "center",
-    marginTop: spacing.lg,
+    marginTop: spacing * 3,              // 30
   },
 });

@@ -1,6 +1,6 @@
 // src/pages/LoginPage.tsx
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import CommonButton from "../components/CommonButton";
 import LoginModal from "../components/LoginModal";
 import { colors, spacing, typography } from "../styles";
@@ -14,32 +14,19 @@ import axiosInstance from "../api/axios";
 export function LoginPage() {
   const [role, setRole] = useState<UserRole | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const { user, token, setUser, setWalletConnected } = useUserStore();
+  const { token, setUser, setWalletConnected } = useUserStore();
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   const handleSelectRole = async (selected: UserRole) => {
     const tokenToUse = token || globalThis.authToken;
 
-    console.log("🔍 token in store:", token);
-    console.log("🔍 token in globalThis:", globalThis.authToken);
-    console.log("🔍 tokenToUse:", tokenToUse);
-
     if (tokenToUse) {
-      // ✅ 인터셉터에서 쓸 수 있도록 전역 토큰 설정
       globalThis.authToken = tokenToUse;
-
       try {
         const res = await axiosInstance.get("/auth/verify");
-        console.log("✅ /auth/verify 응답:", res.data);
-        console.log("✅ 서버에서 받은 token:", res.data.token);
-
         const verifiedUser = res.data.user;
         setUser(verifiedUser, tokenToUse);
-
-        if (verifiedUser.wallet) {
-          setWalletConnected(true);
-        }
-
+        if (verifiedUser.wallet) setWalletConnected(true);
         if (verifiedUser.role === selected) {
           navigation.navigate("ProposalList");
           return;
@@ -47,33 +34,44 @@ export function LoginPage() {
       } catch (err) {
         console.error("❌ /auth/verify 실패:", err);
       }
-    } else {
-      console.log("⚠️ 토큰 없음, 모달로 진행");
     }
-
-    // 토큰이 없거나 role이 다르면 → 모달
     setRole(selected);
     setModalVisible(true);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Fundit에 오신 것을 환영합니다</Text>
-      <Text style={styles.subtitle}>역할을 선택해 로그인하세요</Text>
+      <View style={styles.header} pointerEvents="box-none">
+        {/* 로고 이미지 */}
+        <Image
+          source={require("../assets/Fundit.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.subtitle}>Blockchain-based Insurance Platform</Text>
+      </View>
 
-      <CommonButton
-        title="Log in as Individual"
-        onPress={() => handleSelectRole("user")}
-        role="user"
-        style={styles.button}
-      />
+      <View style={styles.actions}>
+        <CommonButton
+          title="Log in as individual"
+          onPress={() => handleSelectRole("user")}
+          role="user"
+          style={styles.button}
+        />
+        <CommonButton
+          title="Log in as Insurer"
+          onPress={() => handleSelectRole("company")}
+          role="company"
+          style={styles.button}
+        />
+      </View>
 
-      <CommonButton
-        title="Log in as Insurer"
-        onPress={() => handleSelectRole("company")}
-        role="company"
-        style={styles.button}
-      />
+      <View style={styles.footer} pointerEvents="box-none">
+        <Text style={styles.hello}>Happy to see you again!</Text>
+        <Pressable onPress={() => {}} accessibilityRole="link">
+          <Text style={styles.link}>Drop us a message</Text>
+        </Pressable>
+      </View>
 
       {isModalVisible && role && (
         <LoginModal role={role} onClose={() => setModalVisible(false)} />
@@ -86,25 +84,49 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingHorizontal: spacing * 2,
     justifyContent: "center",
-    alignItems: "center",
-    padding: spacing.lg,
   },
-  title: {
-    fontSize: typography.title,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text,
-    marginBottom: spacing.sm,
-    textAlign: "center",
+  header: {
+    marginTop: spacing * 13,
+    alignItems: "center",
+    marginBottom: spacing * 4,
+    zIndex: 0, 
+  },
+  logo: {
+    width: 150,
+    height: 40,
+    marginBottom: spacing * 2,
   },
   subtitle: {
-    fontSize: typography.body,
-    color: colors.muted,
-    marginBottom: spacing.xl,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.toggle,
+    color: colors.primary,
     textAlign: "center",
   },
+  actions: {
+    alignItems: "stretch",
+    zIndex: 10,
+  },
   button: {
-    marginTop: spacing.md,
+    backgroundColor: colors.login,
     alignSelf: "stretch",
+    marginHorizontal: 0,
+  },
+  footer: {
+    marginTop: spacing * 16,
+    alignItems: "center",
+    zIndex: 0, 
+  },
+  hello: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.card,
+    color: colors.textMuted,
+    marginBottom: spacing,
+  },
+  link: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.toggle,
+    color: colors.primary,
   },
 });

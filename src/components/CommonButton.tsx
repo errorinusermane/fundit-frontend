@@ -1,3 +1,4 @@
+// src/components/CommonButton.tsx
 import React from "react";
 import {
   TouchableOpacity,
@@ -6,7 +7,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import { colors, spacing, typography, radius, shadows } from "../styles";
+import { colors, spacing, typography, radius } from "../styles";
 
 type ButtonRole = "user" | "company" | "default";
 
@@ -29,11 +30,12 @@ const CommonButton: React.FC<CommonButtonProps> = ({
   style,
   role = "default",
 }) => {
+  // 이전 로직 유지: 역할별 색상 분기 함수는 남겨두되,
+  // 디자인 토큰에 맞춰 실제 색은 토큰만 사용.
   const getBackgroundColor = () => {
-    if (disabled) return colors.muted;
-    if (role === "company") return colors.primary;
-    if (role === "user") return colors.secondary;
-    return colors.primary;
+    if (disabled) return colors.divider;             // 비활성: 라인 톤
+    // 현재 팔레트에 secondary 없음 → 두 역할 모두 primary 계열 사용
+    return colors.intents.primaryGradient[0];        // solid 폴백(그라데ient 첫 색)
   };
 
   return (
@@ -43,14 +45,13 @@ const CommonButton: React.FC<CommonButtonProps> = ({
       disabled={disabled || loading}
       style={[
         styles.button,
-        { backgroundColor: getBackgroundColor() },
+        { backgroundColor: getBackgroundColor(), borderColor: colors.border },
         fullWidth && { alignSelf: "stretch" },
-        shadows.soft,
         style,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={colors.intents.primaryFg} />
       ) : (
         <Text style={styles.text}>{title}</Text>
       )}
@@ -60,17 +61,19 @@ const CommonButton: React.FC<CommonButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    height: 48,
-    borderRadius: radius.lg,
+    height: 60,
+    borderRadius: radius,                  // 16
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: spacing.lg,
-    marginVertical: spacing.sm,
+    paddingHorizontal: spacing * 2,        // 20
+    marginVertical: spacing,               // 10
+    borderWidth: StyleSheet.hairlineWidth,
   },
   text: {
-    color: "#fff",
-    fontSize: typography.subtitle,
-    fontWeight: typography.fontWeight.bold,
+    color: colors.intents.primaryFg,       // #fff
+    fontSize: typography.size.title,        // 18
+    fontWeight: typography.weight.bold,    // 700
+    fontFamily: typography.family.base,
   },
 });
 

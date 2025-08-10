@@ -20,7 +20,7 @@ export default function SearchBox({
         value={value}
         onChangeText={onChange}
         placeholder={placeholder}
-        placeholderTextColor={colors.muted}
+        placeholderTextColor={colors.textMuted}
       />
     </View>
   );
@@ -29,14 +29,16 @@ export default function SearchBox({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    borderRadius: radius,
+    paddingHorizontal: spacing,
+    paddingVertical: spacing / 1.5,
     borderWidth: 1,
     borderColor: colors.border,
   },
   input: {
-    fontSize: typography.body,
+    fontSize: typography.size.body,
+    fontFamily: typography.family.base,
+    fontWeight: typography.weight.regular,
     color: colors.text,
   },
 });

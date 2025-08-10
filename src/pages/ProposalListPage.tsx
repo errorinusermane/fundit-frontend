@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, FlatList, Text, TouchableOpacity, StyleSheet as RNStyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -27,7 +21,8 @@ export function ProposalListPage() {
   const { user } = useUserStore();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<ProposalStatus | "ALL">("ALL");
+  const [selectedFilter, setSelectedFilter] =
+    useState<ProposalStatus | "ALL">("ALL");
   const [proposals, setProposals] = useState<(Proposal & { remainingTime: number })[]>([]);
 
   useEffect(() => {
@@ -51,35 +46,38 @@ export function ProposalListPage() {
 
   return (
     <View style={styles.container}>
-      <PageHeader
-        current="Explore"
-        onNavigate={(page) => navigation.navigate(page)}
-      />
+      <PageHeader current="Explore" onNavigate={(page) => navigation.navigate(page)} />
 
       <View style={styles.searchBox}>
         <SearchBox value={searchQuery} onChange={setSearchQuery} />
       </View>
 
       <View style={styles.filterRow}>
-        {FILTERS.map((filter) => (
-          <TouchableOpacity
-            key={filter}
-            onPress={() => setSelectedFilter(filter)}
-            style={[
-              styles.filterButton,
-              selectedFilter === filter && styles.filterButtonActive,
-            ]}
-          >
-            <Text
+        {FILTERS.map((filter) => {
+          const active = selectedFilter === filter;
+          return (
+            <TouchableOpacity
+              key={filter}
+              onPress={() => setSelectedFilter(filter)}
               style={[
-                styles.filterText,
-                selectedFilter === filter && styles.filterTextActive,
+                styles.filterButton,
+                active && {
+                  borderColor: colors.primary,
+                },
               ]}
+              activeOpacity={0.8}
             >
-              {filter}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.filterText,
+                  active && { color: colors.primary },
+                ]}
+              >
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       <FlatList
@@ -90,20 +88,20 @@ export function ProposalListPage() {
           <ProposalCard
             proposal={item}
             onPress={() =>
-              navigation.navigate("ProposalDetail", {
-                proposalId: item.id,
-              })
+              navigation.navigate("ProposalDetail", { proposalId: item.id })
             }
           />
         )}
       />
 
       {user?.role === "user" && (
-        <View style={styles.floatingButton}>
+        <View style={styles.fabWrap}>
           <CommonButton
-            title="Create Proposal"
-            role="user"
+            title="+"
+            fullWidth={false}
             onPress={() => navigation.navigate("CreateProposal")}
+            // 버튼 자체 퍼블리싱은 CommonButton 내부 토큰 사용
+            style={styles.fab}
           />
         </View>
       )}
@@ -111,47 +109,58 @@ export function ProposalListPage() {
   );
 }
 
+const CHIP_H = 36;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
   searchBox: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
+    paddingHorizontal: spacing * 2, // 20
+    paddingTop: spacing * 2,        // 20
   },
   filterRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: spacing.sm,
+    alignItems: "center",
+    gap: spacing,                   // 10
+    paddingHorizontal: spacing * 2, // 20
+    paddingVertical: spacing,       // 10
   },
   filterButton: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.md,
+    height: CHIP_H,
+    paddingHorizontal: spacing * 1.6,   // 16
+    borderRadius: CHIP_H / 2,           // pill
     backgroundColor: colors.surface,
-    borderRadius: 20,
-    borderWidth: 1,
+    borderWidth: RNStyleSheet.hairlineWidth,
     borderColor: colors.border,
-  },
-  filterButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   filterText: {
-    fontSize: typography.small,
-    color: colors.muted,
-    fontWeight: typography.fontWeight.medium,
-  },
-  filterTextActive: {
-    color: colors.surface,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.toggle,    // 16
+    fontWeight: typography.weight.medium,
+    color: colors.textMuted,
   },
   listContainer: {
-    paddingHorizontal: spacing.md,
-    paddingBottom: spacing.xl * 2,
+    paddingHorizontal: spacing * 2, // 20
+    paddingBottom: spacing * 10,    // 100 (FAB 공간)
+    gap: spacing,                   // 카드 간격
   },
-  floatingButton: {
+
+  // Floating action button
+  fabWrap: {
     position: "absolute",
-    right: spacing.lg,
-    bottom: spacing.lg,
+    right: spacing * 2,  // 20
+    bottom: spacing * 2, // 20
+  },
+  fab: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 0,
   },
 });
