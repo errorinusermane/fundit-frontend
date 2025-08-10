@@ -18,6 +18,7 @@ const typography = {
     regular: "400" as const,
     medium:  "600" as const,
     bold:    "700" as const,
+    extra:   "900" as const,
   },
 };
 

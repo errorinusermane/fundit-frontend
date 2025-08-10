@@ -25,7 +25,6 @@ export function MyPage() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>My Page</Text>
 
       {/* Profile (아이콘만) */}
       <View style={styles.profile}>
@@ -62,7 +61,6 @@ export function MyPage() {
           <MenuItem label="Proposals" onPress={() => navigation.navigate("MyProposals")} />
           <MenuItem label="Contracts" onPress={() => navigation.navigate("MyContracts")} />
           <MenuItem label="Rewards" onPress={() => navigation.navigate("Rewards")} />
-          <MenuItem label="General" onPress={() => {}} disabled />
         </>
       )}
 
@@ -72,7 +70,6 @@ export function MyPage() {
           <MenuItem label="Contracts" onPress={() => navigation.navigate("MyContracts")} />
           <MenuItem label="Rewards" onPress={() => {}} disabled />
           <AlertMessage message="⚠️ Company accounts cannot receive rewards." type="warning" />
-          <MenuItem label="General" onPress={() => {}} disabled />
         </>
       )}
     </View>
@@ -107,15 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: spacing * 2,
-    paddingTop: spacing * 4,
-  },
-  header: {
-    fontFamily: typography.family.base,
-    fontSize: typography.size.nav,
-    fontWeight: typography.weight.bold,
-    color: colors.text,
-    textAlign: "center",
-    marginBottom: spacing * 3,
+    paddingTop: spacing * 2,
   },
   profile: {
     alignItems: "center",

@@ -45,7 +45,6 @@ export function MyProposalsPage() {
     <View style={styles.container}>
       {/* 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.title}>My Proposals</Text>
         <Text style={styles.subtitle}>
           Share what kind of insurance you need, and get customized offers.
         </Text>
@@ -92,17 +91,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-
   header: {
     paddingHorizontal: spacing * 2, // 20
-    paddingTop: spacing * 2,        // 20
+    paddingTop: spacing,
     paddingBottom: spacing * 1.6,   // 16
-  },
-  title: {
-    fontFamily: typography.family.base,
-    fontSize: typography.size.nav,     // 25
-    color: colors.text,
-    marginBottom: spacing * 0.6,       // 6
   },
   subtitle: {
     fontFamily: typography.family.base,

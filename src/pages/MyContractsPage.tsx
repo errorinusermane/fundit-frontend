@@ -46,9 +46,6 @@ export function MyContractsPage() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.inner}>
-      {/* 페이지 타이틀 */}
-      <Text style={styles.pageTitle}>My Contracts</Text>
-
       {/* 섹션 제목 */}
       <View style={{ marginBottom: spacing * 1.2 }}>
         <Text style={styles.sectionTitle}>Contracts</Text>
@@ -83,16 +80,8 @@ const styles = StyleSheet.create({
   },
   inner: {
     paddingHorizontal: spacing * 2, // 20
-    paddingTop: spacing * 4,        // 40
+    paddingTop: spacing,        // 40
     paddingBottom: spacing * 6,     // 60
-  },
-  pageTitle: {
-    fontFamily: typography.family.base,
-    fontSize: typography.size.nav,       // 25
-    fontWeight: typography.weight.bold,  // 700
-    color: colors.text,
-    textAlign: "center",
-    marginBottom: spacing * 3,           // 30
   },
   sectionTitle: {
     fontFamily: typography.family.base,
