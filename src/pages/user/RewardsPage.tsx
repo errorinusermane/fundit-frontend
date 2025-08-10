@@ -129,13 +129,14 @@ const styles = StyleSheet.create({
   // 헤더
   heroTitle: {
     fontFamily: typography.family.base,
-    fontSize: typography.size.nav, // 25
+    fontSize: typography.size.title,
+    fontWeight: typography.weight.bold,
     color: colors.text,
     marginBottom: spacing * 0.5,
   },
   heroSubtitle: {
     fontFamily: typography.family.base,
-    fontSize: typography.size.card, // 17
+    fontSize: typography.size.toggle,
     color: colors.textMuted,
     marginBottom: spacing * 2,
   },
@@ -181,7 +182,8 @@ const styles = StyleSheet.create({
   // 섹션 타이틀
   sectionTitle: {
     fontFamily: typography.family.base,
-    fontSize: typography.size.title, // 20
+    fontSize: typography.size.title,
+    fontWeight: typography.weight.bold,
     color: colors.text,
     marginBottom: spacing * 1.2,
   },
