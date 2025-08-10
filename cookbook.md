@@ -46,12 +46,27 @@ https://microsoft.github.io/react-native-windows/docs/rnm-getting-started
 # 이거 아래 한 줄로 바로 전체 실행됨!!! 막 터미널 여러 개 켤 필요 없음!!!
 npx react-native run-android
 
+# 아니 또 이제 백엔드 켠 후에는 아래 코드로 하라네
+npm start
+
 # 에뮬레이터 한번 켜고 해야함
 emulator -list-avds
 emulator -avd Pixel_5
 
 # IP 확인
 ipconfig getifaddr en0
+
+# ================================================= #
+
+# 매직링크 테스트하는 법
+1. 일단 백엔드 로컬 실행함 npm dev
+2. 프론트 로컬 실행 npm start
+3. 매직링크 전송
+4. 포스트맨에서 http://(IP주소):8080/auth/verify 에서 POST, body에 토큰 넣어서 지갑 주소 임의로 넣기
+http://(IP주소):8080/auth/verify
+{ "token" : "토큰" }
+헤더, 바디 둘 다!! 넣어야 함.
+5. post된 토큰을 프론트의 /api/axios 파일에서 Bearer 뒤에 넣음.
 
 # ================================================= #
 
@@ -125,7 +140,8 @@ npm i react-native-gesture-handler@2.15.0 \
 # ================================================= #
 
 # 서비스 Flow
-pages/LoginPage.tsx 에서 
+pages/LoginPage.tsx 에서
+- 자동로그인이 아니지만, 토큰과 지갑 있는지 확인하고, 토큰이 있어도 일단 로그인 페이지가 나오고, 로그인 페이지에서 user 선택하면 토큰으로 email, role, wallet 자동으로 들어가고, 만약 토큰이 있더라도 role이 다른 토큰이면 원래대로 모달이 나오도록 함.
 - Log in as individual 버튼 (components/CommonButton.tsx 사용) 을 누르면 역할이 user로 할당됨, 이후 매직링크 전송 모달(components/LoginModal.tsx) 뜨면 이메일 입력 후 이메일이 전송되었습니다 메세지 등장(components/AlertMessage.tsx)
 - Log in as Insurer 버튼 (components/CommonButton.tsx 사용)을 누르면 역할이 company로 할당됨, 이후 매직링크 전송 모달(components/LoginModal.tsx) 뜨면 이메일 입력 후 이메일이 전송되었습니다 메세지 등장(components/AlertMessage.tsx)
 
