@@ -56,22 +56,19 @@ const u = spacing; // 10
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
   },
   tabs: {
     flexDirection: "row",
-    gap: u * 2,
-    paddingHorizontal: u * 2.4,
-    paddingTop: u * 1.6,
-    paddingBottom: u * 1.2,
-    alignItems: "flex-end",
   },
   tabBtn: {
-    paddingVertical: u * 0.8,
+    flex: 1, // 화면의 절반 차지
+    alignItems: "center", // 가운데 정렬
+    paddingVertical: u * 1.6,
   },
   tabText: {
     fontFamily: typography.family.base,
-    fontSize: typography.size.nav, // 25
+    fontSize: typography.size.title,
     fontWeight: typography.weight.medium,
     color: colors.textMuted,
   },
@@ -81,15 +78,14 @@ const styles = StyleSheet.create({
   },
   activeBar: {
     height: 2,
-    marginTop: u * 0.6,
+    marginTop: u * 1.6,
     backgroundColor: colors.primary,
     borderRadius: 2,
-    // 텍스트 폭 느낌만 살리는 고정 길이 (이미지와 유사)
-    width: 60,
+    width: "70%", // 절반 폭 안에서 중앙에 보이도록
   },
   divider: {
     height: 1,
     backgroundColor: colors.divider,
-    marginLeft: u * 2.4, // 이미지처럼 좌측에서만 시작하는 느낌
   },
 });
+
