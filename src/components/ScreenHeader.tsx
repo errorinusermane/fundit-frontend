@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { colors, spacing, typography } from "../styles";
+import { CommonActions } from "@react-navigation/native";
+import { useUserStore } from "../store/userStore";
 
 const ScreenHeader: React.FC<NativeStackHeaderProps> = ({
   navigation,
@@ -9,6 +11,7 @@ const ScreenHeader: React.FC<NativeStackHeaderProps> = ({
   options,
   back,
 }) => {
+  const { setUser, setWalletConnected } = useUserStore();
   // 우선순위: options.title > route.params?.title > RouteName
   const routeTitle =
     (options.title as string) ||
@@ -17,9 +20,25 @@ const ScreenHeader: React.FC<NativeStackHeaderProps> = ({
   return (
     <View style={styles.wrap}>
       <Pressable
-        onPress={() => navigation.goBack()}
-        style={styles.backBtn}
-        hitSlop={8}
+        onPress={() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else {
+            // ✅ 1) 상태 초기화 → AppNavigator가 Login 스택으로 전환
+            setWalletConnected(false);
+            setUser(null as any, "");
+
+            // ✅ 2) 다음 프레임에 루트 리셋
+            requestAnimationFrame(() => {
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "Login" }],
+                })
+              );
+            });
+          }
+        }}
       >
         {/* 아이콘 라이브러리 없이 유니코드로 처리 */}
         <Text style={styles.backGlyph}>‹</Text>
