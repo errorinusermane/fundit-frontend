@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Text } from "react-native";
+import { View, ScrollView, StyleSheet, Text, StyleSheet as RNStyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamList } from "../../navigation/AppNavigator";
@@ -7,7 +7,7 @@ import { StackParamList } from "../../navigation/AppNavigator";
 import SearchBox from "../../components/SearchBox";
 import CommonButton from "../../components/CommonButton";
 import ProposalCard from "../../components/ProposalCard";
-import { colors, spacing, typography } from "../../styles";
+import { colors, spacing, typography, radius } from "../../styles";
 
 import { getProposalsByUser } from "../../api/proposal";
 import { Proposal } from "../../types/proposal";
@@ -43,8 +43,33 @@ export function MyProposalsPage() {
 
   return (
     <View style={styles.container}>
-      <SearchBox value={search} onChange={setSearch} />
+      {/* 헤더 */}
+      <View style={styles.header}>
+        <Text style={styles.title}>My Proposals</Text>
+        <Text style={styles.subtitle}>
+          Share what kind of insurance you need, and get customized offers.
+        </Text>
 
+        {user?.role === "user" && (
+          <CommonButton
+            title="Create New Proposal"
+            role="user"
+            fullWidth
+            onPress={() => navigation.navigate("CreateProposal")}
+            style={styles.cta}
+          />
+        )}
+      </View>
+
+      {/* 구분선 */}
+      <View style={styles.divider} />
+
+      {/* 검색 */}
+      <View style={styles.searchWrap}>
+        <SearchBox value={search} onChange={setSearch} />
+      </View>
+
+      {/* 리스트 */}
       <ScrollView contentContainerStyle={styles.scroll}>
         {filtered.length === 0 ? (
           <Text style={styles.empty}>No proposals found.</Text>
@@ -58,14 +83,6 @@ export function MyProposalsPage() {
           ))
         )}
       </ScrollView>
-
-      {user?.role === "user" && (
-        <CommonButton
-          title="Create New Proposal"
-          role="user"
-          onPress={() => navigation.navigate("CreateProposal")}
-        />
-      )}
     </View>
   );
 }
@@ -74,15 +91,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    padding: spacing.md,
   },
+
+  header: {
+    paddingHorizontal: spacing * 2, // 20
+    paddingTop: spacing * 2,        // 20
+    paddingBottom: spacing * 1.6,   // 16
+  },
+  title: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.nav,     // 25
+    color: colors.text,
+    marginBottom: spacing * 0.6,       // 6
+  },
+  subtitle: {
+    fontFamily: typography.family.base,
+    fontSize: typography.size.card,    // 17
+    color: colors.textMuted,
+    lineHeight: typography.size.card + 6,
+    marginBottom: spacing * 1.6,       // 16
+  },
+
+  // 상단 CTA 버튼(이미지의 밝은 그라데이션 느낌은 CommonButton 내부 스타일 사용,
+  // 여백/라운드만 페이지에서 조정)
+  cta: {
+    borderRadius: radius,
+    alignSelf: "stretch",
+  },
+
+  divider: {
+    height: RNStyleSheet.hairlineWidth,
+    backgroundColor: colors.divider,
+  },
+
+  searchWrap: {
+    paddingHorizontal: spacing * 2, // 20
+    paddingTop: spacing * 1.6,      // 16
+    paddingBottom: spacing,         // 10
+  },
+
   scroll: {
-    paddingBottom: spacing.xl * 2,
+    paddingHorizontal: spacing * 2, // 20
+    paddingBottom: spacing * 8,     // 80
+    gap: spacing,                   // 카드 간격
   },
+
   empty: {
-    fontSize: typography.body,
-    color: colors.muted,
+    fontFamily: typography.family.base,
+    fontSize: typography.size.body, // 18
+    color: colors.textMuted,
     textAlign: "center",
-    marginTop: spacing.lg,
+    marginTop: spacing * 3,
   },
 });
