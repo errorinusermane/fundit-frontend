@@ -28,10 +28,14 @@ https://blog.naver.com/ewhanthbeot
 npx react-native doctor
 
 # 폴더 이동해서 init
-cd /Users/susie/Desktop/Temp_Laptop3/Solidity_Files/Yn
+<!-- cd /Users/susie/Desktop/Temp_Laptop3/Solidity_Files/Yn
 npx @react-native-community/cli init MyMacOSApp --version 0.73.6
 cd MyMacOSApp
-npx react-native-macos-init --version 0.73.15
+npx react-native-macos-init --version 0.73.15 -->
+cd /Users/susie/Desktop/Temp_Laptop3/Solidity_Files/Yn
+npx @react-native-community/cli init fundit_frontend --version 0.75.0
+cd fundit_frontend
+npx react-native-macos-init --version 0.75.33
 
 # 이제까지 계속 오류나던 것 중에 그나마 했던 거
 0. (그 전에 한 거) 자바 17로 맞추기, extension 전부 다시 깔기
